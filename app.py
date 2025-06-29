@@ -11,6 +11,11 @@ import base64
 import os
 from openai import OpenAI
 
+db_path = "/var/data/futureread.db"
+if not os.path.exists(db_path):
+    # Creates an empty file (if you want to manually write the schema later)
+    open(db_path, "w").close()
+
 
 # Load environment variables
 load_dotenv()
@@ -22,7 +27,7 @@ app = Flask(__name__)
 app.secret_key = "dev"  # Change this in production
 
 # Initialize database
-db = SQL("sqlite:///futureread.db")
+db = SQL("sqlite:////var/data/futureread.db")
 
 # Configure Flask-Login
 login_manager = LoginManager()
