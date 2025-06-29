@@ -28,7 +28,7 @@ body::before {
 }
 
 .feature-card {
-  background: rgba(0, 0, 0, 0.4);
+  background: black;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 15px;
   padding: 20px;
@@ -39,7 +39,7 @@ body::before {
 }
 
 .feature-card:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: black;
   transform: translateY(-5px) scale(1.03);
   box-shadow: 0 0 15px rgba(221, 179, 8, 0.43);
 }
