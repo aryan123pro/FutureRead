@@ -15,7 +15,8 @@ from psycopg2.extras import RealDictCursor
 
 # PostgreSQL database connection
 def get_db():
-    return psycopg2.connect(os.getenv("DATABASE_URL"), cursor_factory=RealDictCursor)
+    db_url = os.getenv("DATABASE_URL").strip()
+    conn = psycopg2.connect(db_url, cursor_factory=RealDictCursor)
 
 def query_db(query, args=(), one=False):
     conn = get_db()
