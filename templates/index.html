@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid px-3 px-md-4 py-5 text-white overflow-hidden">
+
+  <!-- Hero Title -->
+  <div class="glass-card text-center px-3 py-4 px-md-5 mb-5">
+    <h1 class="display-4 text-glow">Welcome to <span class="glow-text logo-text">FutureRead</span></h1>
+    <p class="fs-5">Your all-in-one AI-powered spiritual guide: Tarot, Astrology, Palm Reading & more.</p>
+  </div>
+
+  <!-- Features Section -->
+  <div class="glass-card px-3 py-4 px-md-5 mb-5">
+    <div class="row gx-3 gy-4 justify-content-center">
+      {% set features = [
+        ('/tarot', '🃏', 'Tarot Reading'),
+        ('/astrology', '🌌', 'Astrology Reading'),
+        ('/palm', '✋', 'Palm Reader'),
+        ('/daily', '📅', 'Zodiac Daily'),
+        ('/oracle', '🧙🏻‍♀️', 'Talk to an Oracle')
+      ] %}
+      {% for link, emoji, name in features %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+        <a href="{{ link }}" class="card glass-card text-center text-white shadow-sm p-3 d-block h-100 text-decoration-none feature-card">
+          <div class="fs-1">{{ emoji }}</div>
+          <p class="mt-2 fw-semibold">{{ name }}</p>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <div class="glass-card px-3 py-4 px-md-5 mb-5">
+    <div class="row align-items-center gy-4">
+      <div class="col-12 col-md-6 px-3">
+        <h2 class="fw-bold mb-3 text-glow">About FutureRead</h2>
+        <p class="fs-5">
+          <strong>FutureRead</strong> blends ancient mystic practices with modern AI to give you magical insights into your life.
+          Whether it's Tarot, Astrology, or Palm Reading, we harness technology to bring clarity, curiosity, and cosmic fun to your day.
+        </p>
+      </div>
+      <div class="col-12 col-md-6 text-center px-3">
+        <img src="/static/images/logo.png" class="img-fluid rounded-4 shadow-lg" style="max-width: 250px;" alt="FutureRead Logo">
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="glass-card px-3 py-4 px-md-5 mb-5">
+    <h2 class="text-glow mb-5">❓ Frequently Asked Questions</h2>
+    <div class="row align-items-center gy-4">
+      <div class="col-12 col-lg-6 px-3">
+        <div class="mb-4">
+          <h5 class="fw-bold text-white">Is FutureRead really powered by AI?</h5>
+          <p class="text-light">Yes! FutureRead uses advanced AI to interpret tarot spreads, analyze palm lines, and provide astrology-based insights. All readings are generated through machine learning models.</p>
+        </div>
+        <div class="mb-4">
+          <h5 class="fw-bold text-white">Is this meant to replace real astrology or tarot readings?</h5>
+          <p class="text-light">No — it's a playful, tech-enhanced experience meant for personal reflection and fun. We encourage you to use it alongside your own intuition and traditional sources if you like them.</p>
+        </div>
+        <div>
+          <h5 class="fw-bold text-white">Can I trust the results or predictions?</h5>
+          <p class="text-light">Treat them as reflective insights. Our goal is to help you explore your feelings and choices — not predict your future with absolute certainty.</p>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6 text-center px-3">
+        <img src="/static/images/question.gif" class="img-fluid rounded-4 shadow-lg" style="max-width: 300px;" alt="FAQ Illustration">
+      </div>
+    </div>
+  </div>
+
+  <!-- 🌌 Meet the Developer -->
+  <div class="glass-card px-3 py-4 px-md-5 mb-5">
+    <div class="row align-items-center gy-4 flex-md-row-reverse">
+      <!-- Image Section -->
+      <div class="col-12 col-md-6 text-center px-3">
+        <img src="/static/avatars/user_1.png" alt="Aryan" class="img-fluid rounded-4 shadow-lg border border-2 border-light" style="max-width: 220px; object-fit: cover;">
+      </div>
+
+      <!-- Text & Socials Section -->
+      <div class="col-12 col-md-6 px-3 text-center text-md-start">
+        <h2 class="fw-bold mb-3 text-glow">👨‍💻 Meet the Developer</h2>
+        <p class="fs-5 mb-3">
+          Hey, I'm <strong>Aryan</strong> — a tech and mysticism enthusiast. I created <strong>FutureRead</strong> to make spiritual insights
+          accessible, interactive, and powered by cutting-edge AI. Enjoy the journey through the stars, cards, and beyond!
+        </p>
+        
+        <div class="d-flex justify-content-center justify-content-md-start gap-3 mt-3 flex-wrap">
+          <a href="https://www.instagram.com/aryanlovesmusic" target="_blank" class="btn btn-outline-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Instagram">
+            <i class="bi bi-instagram fs-5"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/aryan-doifode-711345356" target="_blank" class="btn btn-outline-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="LinkedIn">
+            <i class="bi bi-linkedin fs-5"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+
+  <footer class="text-center text-white pt-5 border-top border-secondary mt-5">
+
+    <p>&copy; 2025 <strong>FutureRead</strong>. All rights reserved.</p>
+     <p class="fw-bold mb-3 text-glow">Special Credits: Dheer Abwani</p>
+    <small>
+      <a href="#" class="text-warning me-3 text-decoration-none">Privacy Policy</a>
+      <a href="#" class="text-warning text-decoration-none">Terms</a>
+    </small>
+  </footer>
+</div>
+{% endblock %}

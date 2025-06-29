@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block title %}My Profile - FutureRead{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+  <h1 class="glow mb-4">My Profile</h1>
+
+  <!-- Avatar Display -->
+  <div class="mb-4">
+    {% if avatar_url %}
+      <img src="{{ avatar_url }}" alt="Avatar" class="rounded-circle border border-3 border-light shadow-sm" width="140" height="140">
+    {% else %}
+      <img src="{{ url_for('static', filename='avatars/default.png') }}" alt="Default Avatar" class="rounded-circle border border-3 border-secondary shadow-sm" width="140" height="140">
+    {% endif %}
+  </div>
+
+  <!-- Profile Form -->
+  <form method="POST" enctype="multipart/form-data" class="bg-dark bg-opacity-50 p-4 rounded-4 shadow-lg mx-auto text-start" style="max-width: 500px;">
+    <div class="mb-3">
+      <label for="avatar" class="form-label text-white">Change Avatar</label>
+      <input type="file" name="avatar" accept="image/*" class="form-control bg-dark text-white border-secondary">
+    </div>
+
+    <div class="mb-3">
+      <label for="username" class="form-label text-white">Username</label>
+      <input type="text" name="username" value="{{ user.username }}" class="form-control bg-dark text-white border-secondary" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label text-white">Email</label>
+      <input type="email" name="email" value="{{ user.email }}" class="form-control bg-dark text-white border-secondary" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="dob" class="form-label text-white">Date of Birth</label>
+      <input type="date" name="dob" value="{{ user.dob }}" class="form-control bg-dark text-white border-secondary">
+    </div>
+
+    <div class="mb-3">
+      <label for="birth_time" class="form-label text-white">Birth Time</label>
+      <input type="time" name="birth_time" value="{{ user.birth_time }}" class="form-control bg-dark text-white border-secondary">
+    </div>
+
+    <div class="mb-3">
+      <label for="birth_place" class="form-label text-white">Birth Place</label>
+      <input type="text" name="birth_place" value="{{ user.birth_place }}" class="form-control bg-dark text-white border-secondary">
+    </div>
+
+    <div class="mb-4">
+      <label for="gender" class="form-label text-white">Gender</label>
+      <select name="gender" class="form-select bg-dark text-white border-secondary">
+        <option value="">Select</option>
+        <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+        <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+        <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-outline-light w-100 shadow-sm">💾 Save Changes</button>
+  </form>
+</div>
+{% endblock %}

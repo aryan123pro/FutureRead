@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<style>
+  body {                                        
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .zodiac-container {
+    max-width: 700px;
+    margin: auto;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 0 60px rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    animation: fadeIn 1s ease-out;
+  }
+
+  .zodiac-heading {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #f8c471;
+    text-align: center;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+  }
+
+  .zodiac-symbol {
+    font-size: 2rem;
+    text-align: center;
+    color: #ffcc70;
+    margin-bottom: 25px;
+    text-shadow: 0 0 10px #ffcc70;
+  }
+
+  .zodiac-text {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    white-space: pre-line;
+    color: #f2f2f2;
+    text-align: justify;
+    animation: slideUp 1.2s ease-out;
+  }
+
+  .btn-outline-light {
+    border-radius: 30px;
+    padding: 10px 25px;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+    background-color: transparent;
+    border: 2px solid #fff;
+  }
+
+  .btn-outline-light:hover {
+    background: #f8c471;
+    color: #000;
+    box-shadow: 0 0 12px #f8c471;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+</style>
+
+<div class="container py-5">
+  <div class="zodiac-container">
+    <h2 class="zodiac-heading">🌟 Daily Zodiac Reading</h2>
+    <div class="zodiac-symbol">♈ {{ zodiac }} ♈</div>
+    <p class="zodiac-text">{{ reading }}</p>
+    <div class="text-center mt-4">
+      <a href="/" class="btn btn-outline-light">🔮 Back to Home</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const loader = document.getElementById('inpage-loader');
+    
+    // If loader exists, delay its removal slightly for effect
+    if (loader) {
+      setTimeout(() => loader.style.display = 'none', 400); // optional delay
+    }
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}Forgot Password - FutureRead{% endblock %}
+
+{% block content %}
+<div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+  <div class="row w-100">
+    <div class="form-wrapper col-md-6 offset-md-3">
+      <div class="text-white p-4 rounded bg-dark bg-opacity-75 shadow-lg">
+        <h2 class="text-center mb-3 glow-text">🔐 Forgot your password?</h2>
+        <p class="text-muted text-center mb-4">Enter your registered email and we’ll send you a magical reset link.</p>
+
+        <form method="post">
+          <div class="mb-3">
+            <label for="email" class="form-label">📧 Email</label>
+            <input type="email" name="email" class="form-control text-center" placeholder="Enter your email" required>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn glow-btn">🔄 Send Reset Link</button>
+          </div>
+        </form>
+
+        <div class="mt-4 text-center">
+          <a href="/login" class="text-info text-decoration-none">← Back to Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

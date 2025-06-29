@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block title %}✨ Astrology Portal{% endblock %}
+
+{% block content %}
+
+<!-- in-page loader -->
+<div id="inpage-loader" class="text-center mt-4" style="display: none;">
+  <img src="{{ url_for('static', filename='images/magic-loader.gif') }}" width="70" alt="Loading...">
+  <p class="mt-2 glow">Consulting your stars...</p>
+</div>
+
+<div class="border astrology-bg text-light d-flex flex-column align-items-center justify-content-center text-center" style="min-height: 100vh; padding: 3rem 1rem; background: linear-gradient(145deg, #1f0036 0%, #0d0d0d 100%); background-size: cover; animation: floatStars 25s linear infinite;">
+
+  <h1 class="display-4 fw-bold glow" style="text-shadow: 0 0 12px #a64ac9, 0 0 20px #ff66cc;">🌌 Celestial Reading</h1>
+  <p class="lead mt-3 mb-5" style="color: #ddd;">
+    Born on <span class="text-info fw-semibold">{{ dob }}</span> at <span class="text-warning fw-semibold">{{ time }}</span> in <span class="text-success fw-semibold">{{ place }}</span><br>
+    the stars aligned to shape your destiny...
+  </p>
+
+  <div class="card px-4 py-5 shadow-lg" style="background: rgba(30, 0, 60, 0.8); border: 1px solid #ab47bc; border-radius: 1.5rem; max-width: 720px;">
+    <h4 class="mb-4 fw-bold text-light">🔯 Oracle's Insight</h4>
+    {% if reading %}
+      <p class="text-light" style="white-space: pre-wrap; font-size: 1.1rem; line-height: 1.6;">{{ reading }}</p>
+    {% else %}
+      <p class="text-danger fw-semibold">Could not retrieve your astrological reading at this time.</p>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+@keyframes floatStars {
+  0% { background-position: 0 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.glow {
+  color: #fff;
+  text-shadow: 0 0 10px #ff66cc, 0 0 20px #a64ac9, 0 0 30px #6f42c1;
+}
+.border{
+    border-radius: 40px;
+}
+</style>
+
+<script>
+function showInPageLoader() {
+  document.getElementById('inpage-loader').style.display = 'block';
+}
+
+// Trigger loader when page starts loading
+window.addEventListener('beforeunload', () => {
+  showInPageLoader();
+});
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const loader = document.getElementById("inpage-loader");
+    if (loader) {
+      loader.style.display = "none";
+    }
+  });
+</script>
+
+{% endblock %}

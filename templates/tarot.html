@@ -1,0 +1,210 @@
+{% extends "layout.html" %}
+
+{% block title %}Tarot Reading - FutureRead{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5 pt-4">
+  <h1 class="glow-text mb-3 display-5">Your Tarot Reading</h1>
+  <p class="lead text-white opacity-50">Destiny has awarded you 3 out of 78 cards</p>
+  <p class="lead text-light opacity-75">Click on each card to reveal your destiny...</p>
+
+  <div class="text-center mt-4">
+    <button id="analyze-btn" class="btn glow-btn px-4 py-2">Analyze My Cards</button>
+  </div>
+
+  <div id="reading-container" class="oracle-section mt-5" style="display: none;" style="margin: 10px; padding: 10px;">
+  <div id="reading-loader" class="text-center mb-4" style="display: none;">
+    <span class="loader-text text-pink fw-semibold">🔮 The Oracle is conjuring your fate...</span>
+  </div>
+
+  <div class="oracle-box mx-auto text-start">
+    <h3 class="glow-text text-center mb-4">🔮 Your Oracle Speaks</h3>
+    <div id="reading-text" class="oracle-text"></div>
+  </div>
+</div>
+
+
+</div>
+
+<div class="d-flex justify-content-center gap-4 flex-wrap my-5 tarot-deck">
+  {% for card in cards %}
+  <div class="tarot-card" onclick="flipCard(this)" data-name="{{ card }}">
+    <div class="card-inner">
+      <div class="card-face card-back">
+        <img src="{{ url_for('static', filename='cards/back.png') }}">
+        <img src="{{ url_for('static', filename='cards/border.png') }}" class="card-border-overlay">
+      </div>
+      <div class="card-face card-front">
+        <img src="{{ url_for('static', filename='cards/' + card) }}">
+        <img src="{{ url_for('static', filename='cards/border.png') }}" class="card-border-overlay">
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<style>
+  .tarot-deck {
+    transition: transform 0.6s ease, opacity 0.6s ease;
+  }
+  .tarot-deck.moved {
+    transform: scale(0.8) translateY(-50px);
+    opacity: 0.2;
+    pointer-events: none;
+  }
+  #reading-container.fade-in {
+    animation: fadeInUp 0.8s ease forwards;
+  }
+  @keyframes fadeInUp {
+    0% {opacity: 0; transform: translateY(30px);}
+    100% {opacity: 1; transform: translateY(0);}
+  }
+
+  .oracle-section {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.oracle-box {
+  background: radial-gradient(circle at top left, rgba(60, 0, 100, 0.7), rgba(10, 0, 30, 0.85));
+  border-radius: 20px;
+  padding: 2rem;
+  border: 2px solid #a35bff;
+
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-family: 'Dancing', cursive;
+}
+
+.oracle-text {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  white-space: pre-line;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .oracle-box {
+    padding: 1.5rem;
+    border-radius: 16px;
+  }
+
+  .oracle-text {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+}
+
+.reading-oracle-wrapper {
+  padding: 2rem 2.5rem;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(50, 0, 80, 0.6));
+  border: 2px solid #c37bff;
+  max-width: 850px;
+  width: 100%;
+  margin: 0 auto;
+  backdrop-filter: blur(12px);
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.reading-box {
+  background: rgba(20, 0, 40, 0.6);
+  padding: 1.75rem 2rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.4s ease-in-out;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.reading-text {
+  font-size: 1.05rem;
+  color: #f8f8f8;
+  line-height: 1.75;
+  white-space: pre-line;
+  text-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+  .reading-oracle-wrapper {
+    padding: 1.5rem;
+    border-radius: 18px;
+  }
+  .reading-box {
+    padding: 1.2rem;
+    border-radius: 14px;
+  }
+  .reading-text {
+    font-size: 1rem;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .reading-oracle-wrapper {
+    padding: 1.5rem;
+    border-radius: 18px;
+  }
+  .reading-box {
+    padding: 1.2rem;
+    border-radius: 14px;
+  }
+  .reading-text {
+    font-size: 1rem;
+  }
+}
+
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function flipCard(cardDiv) {
+  cardDiv.classList.toggle('flipped');
+  cardDiv.classList.toggle('selected');
+}
+
+document.getElementById("analyze-btn").addEventListener("click", async () => {
+  const loader = document.getElementById("reading-loader");
+  const readingBox = document.getElementById("reading-text");
+  const readingContainer = document.getElementById("reading-container");
+  const deck = document.querySelector(".tarot-deck");
+
+  const selectedCards = Array.from(document.querySelectorAll(".tarot-card.selected"))
+                             .map(card => card.getAttribute("data-name"));
+
+  if (selectedCards.length <= 2) {
+    alert("Please flip all the cards!");
+    return;
+  }
+
+  deck.classList.add("moved");
+  readingContainer.style.display = "block";
+  loader.style.display = "block";
+  readingBox.style.display = "none";
+
+  setTimeout(() => {
+    readingContainer.classList.add("fade-in");
+  }, 300);
+
+  try {
+    const res = await fetch("/tarot_reading", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cards: selectedCards })
+    });
+
+    const data = await res.json();
+    readingBox.innerText = data.reading;
+  } catch (err) {
+    readingBox.innerText = "Open all the cards to see your fate. ✨>";
+  } finally {
+    loader.style.display = "none";
+    readingBox.style.display = "block";
+  }
+});
+</script>
+{% endblock %}

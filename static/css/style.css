@@ -1,0 +1,453 @@
+body {
+  background: url("../images/magic-bg.gif") no-repeat center center fixed;
+  background-size: cover;
+  background-color: black;
+  color: white;
+  overflow-x: hidden;
+}
+
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* adjust darkness */
+  z-index: -1;
+}
+.glow-text {
+  color: #fff;
+  text-shadow: 0 0 10px #bb00ff, 0 0 20px #9e00ff, 0 0 30px #6e00ff;
+}
+
+.pt-5 {
+    padding-top: 10px !important;
+}
+.mt-5 {
+    margin-top: 10px !important;
+}
+
+.feature-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 15px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+.feature-card:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 0 15px rgba(221, 179, 8, 0.43);
+}
+
+.emoji {
+  font-size: 2.5rem;
+}
+
+.form{
+    margin: 2px;
+    padding:8px;
+}
+.full-vh {
+    height: 100vh;
+  }
+.form-wrapper {
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 0 20px #00000088;
+  }
+.universe {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.reading-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 90%;
+  max-width: 800px;
+}
+
+.glow {
+  color: #ffffff;
+  text-shadow: 0 0 5px #fff, 0 0 10px #6f42c1, 0 0 20px #6f42c1, 0 0 40px #6f42c1;
+}
+
+.reading-card {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #6f42c1;
+  border-radius: 15px;
+  padding: 1.5rem;
+  font-family: 'Spectral SC', serif;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+/* Solar system */
+.solar-system {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  animation-timing-function: linear;
+}
+
+.sun {
+  width: 20px;
+  height: 20px;
+  background: gold;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 30px gold;
+}
+
+.mercury, .venus, .earth, .mars {
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.mercury {
+  width: 10px;
+  height: 10px;
+  animation: orbit-mercury 4s linear infinite;
+}
+
+.venus {
+  width: 12px;
+  height: 12px;
+  animation: orbit-venus 8s linear infinite;
+}
+.glow-text {
+    color: #fff;
+    text-shadow: 0 0 5px #fff, 0 0 10px #6f42c1, 0 0 20px #6f42c1, 0 0 40px #6f42c1;
+}
+
+@keyframes stars {
+    from { background-position: 0 0; }
+    to { background-position: -10000px 5000px; }
+}
+
+.mystic-card p {
+    font-family: 'Spectral SC', serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+.dropdown-menu {
+  min-width: 160px;
+  font-size: 0.95rem;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.tarot-card {
+  width: 170px;
+  height: 300px;
+  position: relative;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s;
+}
+
+.tarot-card.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-face img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.card-front {
+  transform: rotateY(180deg);
+}
+
+.card-border-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  pointer-events: none;
+}
+#global-loader {
+  transition: opacity 0.5s ease;
+}
+#global-loader[style*="display: none"] {
+  opacity: 0;
+}
+.glow {
+  color: #fff;
+  text-shadow: 0 0 8px #cc00ff, 0 0 16px #9900cc;
+}
+
+.btn-mystic {
+  background: linear-gradient(to right, #6f00ff, #b900ff);
+  color: white;
+  border: none;
+  box-shadow: 0 0 10px #b900ff;
+}
+
+.btn-mystic:hover {
+  opacity: 0.9;
+}
+
+.chat-box {
+  scrollbar-width: thin;
+  scrollbar-color: #660066 transparent;
+}
+.chat-box::-webkit-scrollbar {
+  width: 8px;
+}
+.chat-box::-webkit-scrollbar-thumb {
+  background-color: #660066;
+  border-radius: 8px;
+}
+.small.text-muted.mb-1 {
+  color: #ffccff !important;
+  text-shadow: 0 0 6px #ff66cc;
+}
+.mystic-flash {
+  background: rgba(70, 0, 100, 0.8);
+  color: #fff;
+  font-weight: 500;
+  text-shadow: 0 0 8px #ff66cc;
+  border: 1px solid #ff00cc;
+  box-shadow: 0 0 15px #9900cc;
+  animation: fadeOut 3s ease-out forwards;
+  transition: all 0.3s ease;
+}
+
+/* Animation to vanish */
+@keyframes fadeOut {
+  0%   { opacity: 1; }
+  70%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
+
+.btn-mystic-glow {
+  background: linear-gradient(145deg, #8f00ff, #4b0082);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  box-shadow: 0 0 12px #c97fff, 0 0 24px #c97fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-mystic-glow:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 16px #ff00f2, 0 0 32px #b46aff;
+}
+#reading-container {
+  animation: fadeIn 0.7s ease-in;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid #a64bf4;
+  border-radius: 16px;
+  padding: 24px;
+  color: #eee;
+}
+.loader-text {
+  font-size: 1.1rem;
+  color: #e2b7ff;
+  animation: pulse 1.5s infinite ease-in-out;
+  display: block;
+  text-align: center;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+.text-oracle {
+  color: #da8eff;
+  font-family: 'Cinzel Decorative', cursive;
+  letter-spacing: 0.5px;
+}
+
+.bg-gradient {
+  background: rgba(0, 0, 0, 0.089);
+}
+
+.chat-box::-webkit-scrollbar {
+  width: 8px;
+}
+.chat-box::-webkit-scrollbar-thumb {
+  background: #00000026;
+  border-radius: 4px;
+}
+
+.text-mystic {
+  color: #f7c2ff;
+  font-family: 'Cinzel', serif;
+}
+
+.btn-mystic {
+  background: linear-gradient(to right, #9b00e8, #ff00e0);
+  color: white;
+  border: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+.btn-mystic:hover {
+  opacity: 0.85;
+}
+.glow-text {
+  text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+  font-family: 'Spectral SC', serif;
+}
+#oracle-loading {
+  transition: opacity 0.3s ease;
+}
+.btn-mystic {
+  background: linear-gradient(45deg, #d63384, #6f42c1);
+  border: none;
+  color: white;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-mystic:hover {
+  background: linear-gradient(45deg, #b83280, #4e2a9c);
+  box-shadow: 0 0 12px #ff66cc;
+}
+
+.animate__animated.animate__fadeIn {
+  animation-duration: 1.2s;
+  animation-fill-mode: both;
+  animation-name: fadeIn;
+}
+#page-loader {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+#page-loader.show {
+  display: flex !important;
+  opacity: 1;
+}
+#page-loader {
+  z-index: 9999;
+  display: flex; /* only during loading */
+}
+.navbar {
+  z-index: 9999 !important;
+  position: relative;
+}
+.text-glow {
+  text-shadow: 0 0 10px #fff, 0 0 20px #e600ff, 0 0 30px #e600ff;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+.border-purple {
+  border-color: #a020f0 !important;
+}
+
+.accordion-button::after {
+  filter: brightness(200%);
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #222;
+  color: #fff;
+}
+.text-glow {
+  text-shadow: 0 0 10px #ff4dd2, 0 0 20px #9900cc;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+}
+
+.text-glow {
+  text-shadow: 0 0 6px #ff66cc, 0 0 12px #cc00ff;
+}
+
+main {
+  padding-top: 110px;
+}
+
+/* Prevent horizontal scrolling globally */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw;
+}
+
+.btn-pink {
+  background: linear-gradient(135deg, #ff66cc, #cc00ff);
+  border: none;
+  color: white;
+  box-shadow: 0 0 8px #ff66cc;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-pink {
+  border: 1px solid #ff66cc;
+  color: #ff66cc;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-pink:hover,
+.btn-pink:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #ff66cc;
+  background: linear-gradient(135deg, #ff66cc, #cc00ff);
+  color: white;
+}
+element.style {
+    min-height: 10vh;
+}
+.logo-text {
+  font-family: 'Cinzel Decorative', cursive;
+}
+
+
+
