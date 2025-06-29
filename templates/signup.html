@@ -1,6 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
 <!-- Full-height container with flex centering -->
+ <style>
+  /* Optional: Adds calendar/clock emoji inside fields for flair */
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* white icon for dark bg */
+    cursor: pointer;
+  }
+</style>
+
 <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 100vh;">
   <div class="row w-100">
     <div class="col-md-6 offset-md-3">

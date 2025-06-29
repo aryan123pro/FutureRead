@@ -45,6 +45,9 @@
     text-align: justify;
     animation: slideUp 1.2s ease-out;
   }
+  .text{
+    font-family: 'Dancing', cursive;
+  }
 
   .btn-outline-light {
     border-radius: 30px;
@@ -74,11 +77,11 @@
 
 <div class="container py-5">
   <div class="zodiac-container">
-    <h2 class="zodiac-heading">🌟 Daily Zodiac Reading</h2>
+    <h2 class="zodiac-heading">Daily Zodiac Reading</h2>
     <div class="zodiac-symbol">♈ {{ zodiac }} ♈</div>
-    <p class="zodiac-text">{{ reading }}</p>
+    <p class="zodiac-text text">{{ reading }}</p>
     <div class="text-center mt-4">
-      <a href="/" class="btn btn-outline-light">🔮 Back to Home</a>
+      <a href="/" class="btn btn-outline-light">Back to Home</a>
     </div>
   </div>
 </div>
