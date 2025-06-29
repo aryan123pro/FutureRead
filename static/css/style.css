@@ -510,3 +510,9 @@ element.style {
     padding: 0.75rem;
   }
 }
+
+@media (max-width: 768px) {
+  body {
+    background: #5e2b97 !important;
+  }
+}
