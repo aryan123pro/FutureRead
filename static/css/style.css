@@ -490,3 +490,23 @@ element.style {
     background: radial-gradient(circle, #340054, #1b002a);
   }
 }
+
+.feature-card-custom {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.feature-card-custom:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 576px) {
+  .feature-card-custom {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+}
