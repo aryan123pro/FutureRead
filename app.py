@@ -10,11 +10,31 @@ import openai
 import base64
 import os
 from openai import OpenAI
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
-db_path = "/var/data/futureread.db"
-if not os.path.exists(db_path):
-    # Creates an empty file (if you want to manually write the schema later)
-    open(db_path, "w").close()
+# PostgreSQL database connection
+def get_db():
+    return psycopg2.connect(os.getenv("DATABASE_URL"), cursor_factory=RealDictCursor)
+
+def query_db(query, args=(), one=False):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(query, args)
+    results = cur.fetchall()
+    conn.commit()
+    cur.close()
+    conn.close()
+    return (results[0] if results else None) if one else results
+
+def execute_db(query, args=()):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(query, args)
+    conn.commit()
+    cur.close()
+    conn.close()
+
 
 
 # Load environment variables
@@ -25,9 +45,6 @@ load_dotenv()
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = "dev"  # Change this in production
-
-# Initialize database
-db = SQL("sqlite:////var/data/futureread.db")
 
 # Configure Flask-Login
 login_manager = LoginManager()
@@ -57,14 +74,13 @@ class User(UserMixin):
         self.avatar = avatar
 
 
-# Load user
 @login_manager.user_loader
 def load_user(user_id):
-    user = db.execute("SELECT * FROM users WHERE id = ?", user_id)
+    user = query_db("SELECT * FROM users WHERE id = %s", (user_id,), one=True)
     if user:
-        u = user[0]
-        return User(u["id"], u["username"], u["email"], u.get("avatar"))  # ⬅️ include avatar
+        return User(user["id"], user["username"], user["email"], user.get("avatar"))
     return None
+
 
 
 #url config
@@ -85,11 +101,10 @@ def inject_avatar():
 def home():
     avatar_url = None
     if current_user.is_authenticated:
-        user = db.execute("SELECT avatar FROM users WHERE id = ?", current_user.id)
-        if user and user[0]["avatar"]:
-            avatar_url = url_for("static", filename=f"avatars/{user[0]['avatar']}")
+        user = query_db("SELECT avatar FROM users WHERE id = %s", (current_user.id,), one=True)
+        if user and user["avatar"]:
+            avatar_url = url_for("static", filename=f"avatars/{user['avatar']}")
     return render_template("index.html", now=datetime.now())
-
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -108,16 +123,16 @@ def signup():
                 flash("All fields are required.")
                 return redirect("/signup")
 
-            existing = db.execute("SELECT * FROM users WHERE email = ?", email)
+            existing = query_db("SELECT * FROM users WHERE email = %s", (email,))
             if existing:
                 flash("Email already exists.")
                 return redirect("/signup")
 
             password_hash = generate_password_hash(password)
 
-            db.execute(
-                "INSERT INTO users (username, email, password_hash, dob, birth_time, birth_place, gender, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                username, email, password_hash, dob, birth_time, birth_place, gender, datetime.utcnow().isoformat()
+            execute_db(
+                "INSERT INTO users (username, email, password_hash, dob, birth_time, birth_place, gender, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                (username, email, password_hash, dob, birth_time, birth_place, gender, datetime.utcnow())
             )
 
             flash("Account created successfully!")
@@ -130,18 +145,18 @@ def signup():
     return render_template("signup.html")
 
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
 
-        user = db.execute("SELECT * FROM users WHERE email = ?", email)
+        user = query_db("SELECT * FROM users WHERE email = %s", (email,), one=True)
         if not user:
             flash("Email not found.")
             return redirect("/login")
 
-        user = user[0]
         if not check_password_hash(user["password_hash"], password):
             flash("Incorrect password.")
             return redirect("/login")
@@ -155,12 +170,14 @@ def login():
 
     return render_template("login.html")
 
+
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     flash("You have been logged out.")
     return redirect("/")
+
 
 @app.route("/palm", methods=["GET", "POST"])
 @login_required
@@ -183,6 +200,7 @@ def palmreader():
                 "You are a mystical palm reader. Based on this user's palm image, "
                 "generate a magical, wise, and inspiring palm reading as if you saw the following image:"
                 "\n\n[This is an image of a palm. Use your mystical powers to give an interpretation. Answer in bullet points by explaining each and everthing also BE STRAIGHTFOWRWARD with you answer and focus on user understandabiliy]"
+                "Be Honest and tell everything the truth though if it is negative and mention accuracy of the reading at last also please try keeping it above 70%."
             )
 
             try:
@@ -248,26 +266,34 @@ def clear_oracle():
 def astrology():
     user_id = current_user.id
 
-    rows = db.execute("SELECT dob, birth_time, birth_place, astrology_reading, astrology_timestamp FROM users WHERE id = ?", user_id)
-    user = rows[0] if rows else None
+    user = query_db(
+        "SELECT dob, birth_time, birth_place, astrology_reading, astrology_timestamp FROM users WHERE id = %s",
+        (user_id,),
+        one=True
+    )
 
     if not user or not user["dob"]:
         flash("Your birth details are incomplete. Please update your profile.", "warning")
         return redirect("/profile")
 
-    from datetime import datetime
-
     now = datetime.utcnow()
+
     if user["astrology_reading"] and user["astrology_timestamp"]:
         last_time = datetime.fromisoformat(user["astrology_timestamp"])
         if now.date() == last_time.date():
-            return render_template("astrology.html", reading=user["astrology_reading"],
-                                   dob=user["dob"], time=user["birth_time"], place=user["birth_place"])
+            return render_template(
+                "astrology.html",
+                reading=user["astrology_reading"],
+                dob=user["dob"],
+                time=user["birth_time"],
+                place=user["birth_place"]
+            )
 
-    # 🔮 If no recent reading, call OpenAI
+    # 🔮 Generate new reading
     prompt = (
         f"You are a wise astrologer. Based on the user's birth date: {user['dob']}, "
         f"time: {user['birth_time']}, and place: {user['birth_place']}, provide a spiritual astrology reading."
+        f"Be Honest and tell everything the truth though if it is negative and mention accuracy of the reading at last also please try keeping it above 70%."
     )
 
     try:
@@ -282,11 +308,19 @@ def astrology():
         )
         reading = response.choices[0].message.content
 
-        # 💾 Save the reading
-        db.execute("UPDATE users SET astrology_reading = ?, astrology_timestamp = ? WHERE id = ?", reading, now.isoformat(), user_id)
+        # 💾 Save to PostgreSQL
+        execute_db(
+            "UPDATE users SET astrology_reading = %s, astrology_timestamp = %s WHERE id = %s",
+            (reading, now.isoformat(), user_id)
+        )
 
-        return render_template("astrology.html", reading=reading, dob=user["dob"],
-                               time=user["birth_time"], place=user["birth_place"])
+        return render_template(
+            "astrology.html",
+            reading=reading,
+            dob=user["dob"],
+            time=user["birth_time"],
+            place=user["birth_place"]
+        )
     except Exception as e:
         flash(f"Error: {e}", "danger")
         return redirect("/")
@@ -298,12 +332,12 @@ def astrology():
 def oracle_stream():
     user_msg = request.json.get("prompt")
 
-    # 🎯 Get user ID and fetch details from DB
-    db = get_db()
-    user = db.execute(
-        "SELECT username, dob, birth_time, birth_place, gender, language FROM users WHERE id = ?",
-        (current_user.id,)
-    ).fetchone()
+    # 🎯 Fetch user details from PostgreSQL
+    user = query_db(
+        "SELECT username, dob, birth_time, birth_place, gender, language FROM users WHERE id = %s",
+        (current_user.id,),
+        one=True
+    )
 
     if not user:
         return "User info not found", 400
@@ -319,10 +353,11 @@ def oracle_stream():
     # 🧙 Mystical system prompt with full context
     system_prompt = f"""
     You are the divine Oracle of FutureRead. You are speaking to a seeker named {name}, 
-    who was born on {dob} at {time} in {place}. They identify as {gender}, and their preferred language is english.
+    who was born on {dob} at {time} in {place}. They identify as {gender}, and their preferred language is {language}.
     Use this information to craft insightful, poetic, and cosmic responses. Be mysterious and wise. But also be sensible and still straightforward. So the User Understands. 
     Always guide them gently with personalized, spiritual insights.
-    Answer in very less time """
+    Answer in very less time.
+    """
 
     def generate():
         client = OpenAI()
@@ -340,43 +375,59 @@ def oracle_stream():
 
     return Response(generate(), mimetype="text/event-stream")
 
+
 @app.route("/tarot")
 @login_required
 def tarot():
     import random
+    from datetime import datetime
+
     user_id = current_user.id
 
-    # Check if saved tarot cards exist and are recent
-    user_data = db.execute("SELECT tarot_cards, tarot_timestamp FROM users WHERE id = ?", user_id)
-    tarot_cards = user_data[0]["tarot_cards"]
-    tarot_time = user_data[0]["tarot_timestamp"]
+    user = query_db(
+        "SELECT tarot_cards, tarot_timestamp FROM users WHERE id = %s",
+        (user_id,),
+        one=True
+    )
 
     now = datetime.utcnow()
 
-    if tarot_cards and tarot_time:
-        delta = now - datetime.fromisoformat(tarot_time)
-        if delta.days < 1:
-            cards = tarot_cards.split(",")
-            return render_template("tarot.html", cards=cards)
+    tarot_cards = user["tarot_cards"] if user and user["tarot_cards"] else None
+    tarot_time = user["tarot_timestamp"] if user and user["tarot_timestamp"] else None
 
-    # Generate new cards
+    if tarot_cards and tarot_time:
+        try:
+            # PostgreSQL may return datetime or string
+            if isinstance(tarot_time, str):
+                tarot_time = datetime.fromisoformat(tarot_time)
+            delta = now - tarot_time
+            if delta.days < 1:
+                cards = tarot_cards.split(",")
+                return render_template("tarot.html", cards=cards)
+        except Exception as e:
+            print(f"⚠️ Failed to parse tarot_timestamp: {e}")
+
+    # Draw new tarot cards
     all_cards = os.listdir("static/cards")
     deck = [c for c in all_cards if c.endswith(".png") and "back" not in c and "border" not in c]
     selected = random.sample(deck, 3)
 
-    # Save to DB
-    db.execute("UPDATE users SET tarot_cards = ?, tarot_timestamp = ? WHERE id = ?",
-               ",".join(selected), now.isoformat(), user_id)
+    execute_db(
+        "UPDATE users SET tarot_cards = %s, tarot_timestamp = %s WHERE id = %s",
+        (",".join(selected), now.isoformat(), user_id)
+    )
 
     return render_template("tarot.html", cards=selected)
-
-from flask import jsonify
 
 @app.route("/tarot_reading", methods=["POST"])
 @login_required
 def tarot_reading():
+    from flask import jsonify, request
     data = request.get_json()
     cards = data.get("cards", [])
+
+    if not cards or len(cards) != 3:
+        return jsonify({"reading": "Please draw exactly 3 cards to receive a proper reading."})
 
     card_names = [c.replace("_", " ").replace(".png", "") for c in cards]
 
@@ -388,6 +439,7 @@ You are a wise and mystical Tarot oracle. Interpret these three cards drawn in a
 3. {card_names[2]}
 
 Give a magical and insightful interpretation.
+Be Honest and tell everything the truth though if it is negative and mention accuracy of the reading at last also please try keeping it above 70%.
 """
 
     try:
@@ -395,22 +447,33 @@ Give a magical and insightful interpretation.
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a wise Tarot oracle who gives magical readings. Answer always in bullet points by saying what each card means so the user understands and at last give the user a overview about the readings, do it in a oracle type but understandable language"},
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a wise Tarot oracle who gives magical readings. "
+                        "Answer always in bullet points by saying what each card means so the user understands. "
+                        "At the end, give an overview in oracle-style but simple, human-understandable language."
+                        "Be Honest and tell everything the truth though if it is negative and mention accuracy of the reading at last also please try keeping it above 70%."
+                    )
+                },
                 {"role": "user", "content": prompt}
             ],
             temperature=0.85
         )
         reading = response.choices[0].message.content
-        return jsonify({ "reading": reading.strip() })
+        return jsonify({"reading": reading.strip()})
 
     except Exception as e:
-        return jsonify({ "reading": f"Open all the cards to see you fate ✨ {e}" })
+        return jsonify({"reading": f"Open all the cards to see your fate ✨ (error: {e})"})
+
 
 @app.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
     user_id = current_user.id
-    user = db.execute("SELECT * FROM users WHERE id = ?", user_id)[0]
+
+    # Fetch current user details
+    user = query_db("SELECT * FROM users WHERE id = %s", (user_id,), one=True)
 
     if request.method == "POST":
         username = request.form.get("username")
@@ -428,16 +491,19 @@ def profile():
             avatar_filename = f"user_{user_id}.png"
             avatar.save(os.path.join("static/avatars", avatar_filename))
 
-        db.execute("""
+        # Update the user record
+        execute_db("""
             UPDATE users
-            SET username = ?, email = ?, dob = ?, birth_time = ?, birth_place = ?, gender = ?, avatar = ?
-            WHERE id = ?
-        """, username, email, dob, birth_time, birth_place, gender, avatar_filename, user_id)
+            SET username = %s, email = %s, dob = %s, birth_time = %s,
+                birth_place = %s, gender = %s, avatar = %s
+            WHERE id = %s
+        """, (username, email, dob, birth_time, birth_place, gender, avatar_filename, user_id))
 
         flash("Profile updated successfully.")
         return redirect("/profile")
 
     return render_template("profile.html", user=user)
+
 
 # Route to show 'forgot password' form
 @app.route("/forgot", methods=["GET", "POST"])
@@ -470,7 +536,6 @@ def forgot():
 
     return render_template("forgot.html")
 
-# Route to handle new password form
 @app.route("/reset/<token>", methods=["GET", "POST"])
 def reset_password(token):
     try:
@@ -481,17 +546,16 @@ def reset_password(token):
 
     if request.method == "POST":
         new_password = request.form.get("password")
-
-        from werkzeug.security import generate_password_hash
         hashed = generate_password_hash(new_password)
 
-        # ✅ Update password in the database
-        db.execute("UPDATE users SET password_hash = ? WHERE email = ?", hashed, email)
+        # ✅ Update password in PostgreSQL
+        execute_db("UPDATE users SET password_hash = %s WHERE email = %s", (hashed, email))
 
         flash("✅ Password updated! You can now login.")
         return redirect("/login")
 
     return render_template("reset_password.html", token=token)
+
 
 from openai import OpenAI
 client = OpenAI()
@@ -499,15 +563,20 @@ client = OpenAI()
 @app.route("/daily")
 @login_required
 def zodiac_daily():
-    user = db.execute("SELECT dob FROM users WHERE id = ?", current_user.id)
-    if not user or not user[0]["dob"]:
+    user = query_db("SELECT dob FROM users WHERE id = %s", (current_user.id,), one=True)
+
+    if not user or not user["dob"]:
         flash("Please update your birth date in your profile.")
         return redirect("/profile")
 
-    dob = user[0]["dob"]
+    dob = user["dob"]
     zodiac = get_zodiac_sign(dob)
 
-    prompt = f"Give today's poetic and mystical horoscope for someone with the zodiac sign {zodiac}. Make it warm and spiritual.Give Response as fast as possible so user doesnt need to wait for a long time."
+    prompt = (
+        f"Give today's poetic and mystical horoscope for someone with the zodiac sign {zodiac}. "
+        "Make it warm and spiritual. Give Response as fast as possible so user doesn't need to wait for a long time."
+        "Be Honest and tell everything the truth though if it is negative."
+    )
 
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -522,11 +591,14 @@ def zodiac_daily():
 
     return render_template("daily.html", zodiac=zodiac, reading=reading)
 
-
 from datetime import datetime
 
 def get_zodiac_sign(dob_str):
-    dob = datetime.strptime(dob_str, "%Y-%m-%d")
+    if isinstance(dob_str, str):
+        dob = datetime.strptime(dob_str, "%Y-%m-%d")
+    else:
+        dob = dob_str  # already a datetime.date
+
     day = dob.day
     month = dob.month
     signs = [
