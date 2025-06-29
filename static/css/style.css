@@ -485,3 +485,8 @@ element.style {
 }
 
 
+@media (min-width: 768px) {
+  .card {
+    background: radial-gradient(circle, #340054, #1b002a);
+  }
+}
