@@ -20,7 +20,7 @@
   <div class="card px-4 py-5 shadow-lg" style="background: rgba(30, 0, 60, 0.8); border: 1px solid #ab47bc; border-radius: 1.5rem; max-width: 720px;">
     <h4 class="mb-4 fw-bold text-light">Oracle's Insight</h4>
     {% if reading %}
-      <p class="text-light" style="white-space: pre-wrap; font-size: 1.1rem; line-height: 1.6;">{{ reading }}</p>
+      <p class="text-light text" style="white-space: pre-wrap; font-size: 1.1rem; line-height: 1.6;">{{ reading }}</p>
     {% else %}
       <p class="text-danger fw-semibold">Could not retrieve your astrological reading at this time.</p>
     {% endif %}
@@ -32,7 +32,11 @@
   0% { background-position: 0 0; }
   100% { background-position: 1000px 0; }
 }
-
+.text{
+    font-family: 'Satisfy', cursive;
+    font-size: 1.2rem;
+  }
+  
 .glow {
   color: #fff;
   text-shadow: 0 0 10px #ff66cc, 0 0 20px #a64ac9, 0 0 30px #6f42c1;
