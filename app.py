@@ -293,8 +293,8 @@ def astrology():
     # 🔮 Generate new reading
     prompt = (
         f"You are a wise astrologer. Based on the user's birth date: {user['dob']}, "
-        f"time: {user['birth_time']}, and place: {user['birth_place']}, provide a spiritual astrology reading."
-        f"Be Honest and tell everything the truth though if it is negative and mention accuracy of the reading at last also please try keeping it above 70%."
+        f"time: {user['birth_time']}, and place: {user['birth_place']}, provide a spiritual astrology reading. Kundali which we call in india"
+        f"Be Honest and tell everything the truth though if it is negative and mention accuracy of the reading at last also please try keeping it above 70%. Please make it in marathi language"
     )
 
     try:
