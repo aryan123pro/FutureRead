@@ -201,7 +201,7 @@ def palmreader():
                 "You are a mystical palm reader. Based on this user's palm image, "
                 "generate a magical, wise, and inspiring palm reading as if you saw the following image:"
                 "\n\n[This is an image of a palm. Use your mystical powers to give an interpretation. Answer in bullet points by explaining each and everthing also BE STRAIGHTFOWRWARD with you answer and focus on user understandabiliy]"
-                "Be Honest and tell everything the truth though if it is negative and mention accuracy of the reading at last also please try keeping it above 70%."
+                "Be Honest and tell everything the truth though if it is negative and mention accuracy of the reading at last also please try keeping it above 70%. your answers looks monotonous like if I share my palm and my so many other friends palm the reading of all of them looks almost samr so please try to make everyones future as accurate and presonalized, curated for them as much as possible"
             )
 
             try:
