@@ -440,7 +440,7 @@ You are a wise and mystical Tarot oracle. Interpret these three cards drawn in a
 3. {card_names[2]}
 
 Give a magical and insightful interpretation.
-Be Honest and tell everything the truth though if it is negative and mention accuracy of the reading at last also please try keeping it above 70%.
+Be Honest and tell everything the truth though if it is negative and mention accuracy of the reading at last also please try keeping it above 70%. Show them more of negative in the reading so the answer looks unique each time and dont top them up with positive comments bu EMPHASIZE THOSE POINTS.
 """
 
     try:
